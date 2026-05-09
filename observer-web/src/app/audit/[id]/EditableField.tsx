@@ -57,10 +57,21 @@ export function EditableField({
     );
   }
 
+  const isEmpty = value.trim() === "";
+
   return (
-    <label className="block">
+    <label className="block" data-blank={isEmpty || undefined}>
       <span className="flex items-center justify-between mb-1.5 eyebrow">
-        <span>{label}</span>
+        <span className="inline-flex items-center gap-1.5">
+          {label}
+          {isEmpty && (
+            <span
+              className="h-1.5 w-1.5 rounded-full bg-status-await"
+              aria-label="needs input"
+              title="Needs input"
+            />
+          )}
+        </span>
         <span className="!text-[10px] !tracking-wider normal-case text-ink-faint inline-flex items-center gap-1 h-3">
           {pending ? (
             <>

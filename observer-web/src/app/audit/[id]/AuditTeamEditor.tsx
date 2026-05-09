@@ -71,10 +71,21 @@ export function AuditTeamEditor({
     );
   }
 
+  const isEmpty = team.length === 0;
+
   return (
-    <div>
+    <div data-blank={isEmpty || undefined}>
       <div className="flex items-center justify-between mb-2">
-        <span className="eyebrow">Audit team</span>
+        <span className="eyebrow inline-flex items-center gap-1.5">
+          Audit team
+          {isEmpty && (
+            <span
+              className="h-1.5 w-1.5 rounded-full bg-status-await"
+              aria-label="needs input"
+              title="Needs input"
+            />
+          )}
+        </span>
         <span className="!text-[10px] text-ink-faint h-3">
           {pending ? "saving…" : ""}
         </span>

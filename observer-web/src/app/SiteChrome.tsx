@@ -62,9 +62,6 @@ export function SiteHeader() {
           <Link href="/app" className="hover:text-ink">
             Engagements
           </Link>
-          <Link href="/deck" className="hover:text-ink">
-            Pitch deck&nbsp;↗
-          </Link>
           <Link
             href="/audit/new"
             className="btn-primary !py-1.5 !px-3 !text-[13px]"
@@ -86,13 +83,18 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
         <RouteTransition>{children}</RouteTransition>
       </main>
       <footer className="mt-10 border-t border-line/70">
-        <div className="mx-auto max-w-6xl px-6 py-4 text-xs text-ink-faint flex items-center justify-between">
+        <div className="mx-auto max-w-6xl px-6 py-4 text-xs text-ink-faint flex items-center justify-between gap-4">
           <span>
             <span className="font-serif font-medium text-navy">Observer</span>
             <span className="mx-1.5">·</span>
             ISO 9001 audit studio
           </span>
-          <span>© 2026</span>
+          <span className="flex items-center gap-4">
+            <Link href="/deck" className="hover:text-ink-mute">
+              Pitch deck&nbsp;↗
+            </Link>
+            <span>© 2026</span>
+          </span>
         </div>
       </footer>
     </>

@@ -18,6 +18,7 @@ import { StatusTimeline } from "./StatusTimeline";
 import { ApprovalChip, SectionApprovalFooter } from "./SectionApproval";
 import { CaptureButton } from "./CaptureButton";
 import { UploadEvidenceButton } from "./UploadEvidenceButton";
+import { BlankCountChip } from "./BlankCountChip";
 
 export const dynamic = "force-dynamic";
 
@@ -45,6 +46,40 @@ export default async function EngagementPage({
   const clientApprovedISO = e.clientApprovedAt?.toISOString() ?? null;
   const auditApprovedISO = e.auditApprovedAt?.toISOString() ?? null;
   const evidenceApprovedISO = e.evidenceApprovedAt?.toISOString() ?? null;
+
+  // Per-section blank counts. Excluded when the section is locked (the chip
+  // only matters when the field is editable).
+  const blank = (s: string) => s.trim() === "";
+  const clientBlanks = clientLocked
+    ? 0
+    : [
+        e.organizationName,
+        e.postalAddress,
+        e.contactPerson,
+        e.contactDesignation,
+        e.contactNumber,
+        e.contactEmail,
+        e.auditScope,
+        e.employeeCount,
+        e.iafCode,
+      ].filter(blank).length;
+  const auditTeam: unknown[] = (() => {
+    try {
+      const parsed = JSON.parse(e.auditTeamJson || "[]");
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  })();
+  const auditBlanks = auditLocked
+    ? 0
+    : [
+        e.clientReference,
+        e.contractNumber,
+        e.intimationDate,
+        e.auditDateRange,
+        e.auditManDays,
+      ].filter(blank).length + (auditTeam.length === 0 ? 1 : 0);
 
   return (
     <div className="space-y-10">
@@ -100,11 +135,17 @@ export default async function EngagementPage({
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
 
         <Section
+          id="section-client"
           icon={<Building2 size={16} />}
           eyebrow="Client"
           title="Who they are"
           subtitle="Auto-extracted from the QMS. Click any field to refine."
-          headerSlot={<ApprovalChip approvedAt={clientApprovedISO} />}
+          headerSlot={
+            <div className="flex items-center gap-2">
+              <BlankCountChip count={clientBlanks} scopeId="section-client" />
+              <ApprovalChip approvedAt={clientApprovedISO} />
+            </div>
+          }
           locked={clientLocked}
         >
           <div className="space-y-5">
@@ -188,11 +229,17 @@ export default async function EngagementPage({
         </Section>
 
         <Section
+          id="section-audit"
           icon={<ClipboardList size={16} />}
           eyebrow="Audit"
           title="The engagement"
           subtitle="What you, the auditor, bring to the file."
-          headerSlot={<ApprovalChip approvedAt={auditApprovedISO} />}
+          headerSlot={
+            <div className="flex items-center gap-2">
+              <BlankCountChip count={auditBlanks} scopeId="section-audit" />
+              <ApprovalChip approvedAt={auditApprovedISO} />
+            </div>
+          }
           locked={auditLocked}
         >
           <div className="space-y-5">
@@ -355,6 +402,7 @@ export default async function EngagementPage({
 }
 
 function Section({
+  id,
   icon,
   eyebrow,
   title,
@@ -364,6 +412,7 @@ function Section({
   headerSlot,
   locked,
 }: {
+  id?: string;
   icon: React.ReactNode;
   eyebrow: string;
   title: string;
@@ -374,7 +423,7 @@ function Section({
   locked?: boolean;
 }) {
   return (
-    <section className={full ? "lg:col-span-2" : ""}>
+    <section id={id} className={full ? "lg:col-span-2" : ""}>
       <header className="mb-4 flex items-start justify-between gap-3">
         <div className="flex items-baseline gap-3">
           <span className="inline-flex items-center justify-center h-7 w-7 rounded-md bg-navy/10 text-navy translate-y-[3px]">
