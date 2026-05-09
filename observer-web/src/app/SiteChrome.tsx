@@ -13,21 +13,16 @@ function isLandingPath(pathname: string | null) {
   return pathname === "/";
 }
 
-function Wordmark({ tagline }: { tagline: string }) {
+function Wordmark() {
   return (
-    <span className="flex items-baseline gap-3">
-      <Image
-        src="/logo.png"
-        alt="Observer"
-        width={916}
-        height={247}
-        priority
-        className="h-7 w-auto"
-      />
-      <span className="hidden sm:inline italic text-sm text-ink-mute">
-        — {tagline}
-      </span>
-    </span>
+    <Image
+      src="/logo.png"
+      alt="Observer"
+      width={916}
+      height={247}
+      priority
+      className="h-7 w-auto"
+    />
   );
 }
 
@@ -40,7 +35,7 @@ export function SiteHeader() {
       <header className="border-b border-line bg-paper-card/60 backdrop-blur supports-[backdrop-filter]:bg-paper-card/60">
         <div className="mx-auto max-w-6xl px-6 py-4 flex items-center justify-between">
           <a href="/" className="group">
-            <Wordmark tagline="the back office for ISO audits" />
+            <Wordmark />
           </a>
           <nav className="flex items-center gap-4 text-sm text-ink-mute">
             <a href="/app" className="hover:text-ink">
@@ -59,7 +54,7 @@ export function SiteHeader() {
     <header className="border-b border-line bg-paper-card/60 backdrop-blur supports-[backdrop-filter]:bg-paper-card/60">
       <div className="mx-auto max-w-6xl px-6 py-4 flex items-center justify-between">
         <a href="/app" className="group">
-          <Wordmark tagline="the back office for the audit" />
+          <Wordmark />
         </a>
         <nav className="flex items-center gap-4 text-sm text-ink-mute">
           <a href="/app" className="hover:text-ink">
