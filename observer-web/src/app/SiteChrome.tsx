@@ -28,9 +28,6 @@ export function SiteHeader() {
             </span>
           </a>
           <nav className="flex items-center gap-4 text-sm text-ink-mute">
-            <a href="/deck" className="hover:text-ink">
-              Pitch deck&nbsp;↗
-            </a>
             <a href="/app" className="hover:text-ink">
               Sign in
             </a>
