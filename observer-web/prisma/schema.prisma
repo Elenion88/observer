@@ -1,0 +1,69 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Engagement {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status    String   @default("awaiting_qms")
+
+  organizationName    String  @default("Untitled audit")
+  postalAddress       String  @default("")
+  auditSite           String  @default("")
+  contactPerson       String  @default("")
+  contactDesignation  String  @default("")
+  contactNumber       String  @default("")
+  contactEmail        String  @default("")
+  auditScope          String  @default("")
+  employeeCount       String  @default("")
+  iafCode             String  @default("")
+  standardsJson       String  @default("[]")
+
+  clientReference  String  @default("")
+  contractNumber   String  @default("")
+  intimationDate   String  @default("")
+  auditDateRange   String  @default("")
+  auditManDays     String  @default("")
+  auditStage       String  @default("Stage 1")
+  auditTeamJson    String  @default("[]")
+
+  qmsPath String?
+
+  // Section-level approval timestamps. Null = unapproved (editable).
+  clientApprovedAt DateTime?
+  auditApprovedAt  DateTime?
+
+  evidence  Evidence[]
+  documents Document[]
+}
+
+model Evidence {
+  id           String     @id @default(cuid())
+  engagementId String
+  engagement   Engagement @relation(fields: [engagementId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+
+  filePath String
+  mimeType String
+  label    String @default("")
+  category String @default("evidence")
+  caption  String @default("")
+}
+
+model Document {
+  id           String     @id @default(cuid())
+  engagementId String
+  engagement   Engagement @relation(fields: [engagementId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+
+  kind     String
+  filePath String
+
+  @@unique([engagementId, kind])
+}

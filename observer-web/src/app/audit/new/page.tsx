@@ -1,0 +1,122 @@
+"use client";
+
+import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
+import { ArrowLeft, FileUp, Loader2, Sparkles } from "lucide-react";
+
+export default function NewAuditPage() {
+  const router = useRouter();
+  const [file, setFile] = useState<File | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [pending, startTransition] = useTransition();
+
+  const submit = () => {
+    if (!file) return;
+    setError(null);
+    startTransition(async () => {
+      const fd = new FormData();
+      fd.append("qms", file);
+      const res = await fetch("/api/engagement/new", {
+        method: "POST",
+        body: fd,
+      });
+      if (!res.ok) {
+        const j = await res.json().catch(() => ({}));
+        setError(j.error || `Upload failed (${res.status})`);
+        return;
+      }
+      const j = await res.json();
+      router.push(`/audit/${j.id}`);
+    });
+  };
+
+  return (
+    <div className="mx-auto max-w-xl">
+      <a
+        href="/"
+        className="inline-flex items-center gap-1 text-[12px] text-ink-mute hover:text-ink"
+      >
+        <ArrowLeft size={13} />
+        Engagements
+      </a>
+
+      <div className="mt-3 mb-8">
+        <p className="eyebrow mb-2">Intake</p>
+        <h1 className="font-serif text-[36px] leading-tight font-medium text-ink">
+          New audit
+        </h1>
+        <p className="mt-2 text-[14px] text-ink-mute leading-relaxed">
+          Upload the client&apos;s QMS manual. Observer reads it once and
+          pre-fills the audit packet — you review, refine, and ship.
+        </p>
+      </div>
+
+      <label className="block">
+        <input
+          type="file"
+          accept=".pdf,application/pdf"
+          onChange={(e) => setFile(e.target.files?.[0] || null)}
+          className="sr-only"
+        />
+        <div
+          className={`rounded-[var(--radius-lg)] border border-dashed px-8 py-12 text-center transition-colors cursor-pointer ${
+            file
+              ? "border-navy/50 bg-navy/5"
+              : "border-line-strong bg-paper-card hover:bg-paper-soft"
+          }`}
+        >
+          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-paper-soft text-navy">
+            <FileUp size={20} />
+          </div>
+          {file ? (
+            <>
+              <p className="font-serif text-[18px] text-ink">{file.name}</p>
+              <p className="mt-1 text-[12px] text-ink-mute">
+                {(file.size / 1024).toFixed(0)} KB · click to choose another
+              </p>
+            </>
+          ) : (
+            <>
+              <p className="font-serif text-[18px] text-ink">
+                Choose the QMS manual (PDF)
+              </p>
+              <p className="mt-1 text-[12px] text-ink-mute">
+                The bigger the better — Observer handles 100+ page documents.
+              </p>
+            </>
+          )}
+        </div>
+      </label>
+
+      {error && (
+        <p className="mt-4 rounded-[var(--radius-sm)] bg-status-active/15 px-3 py-2 text-[13px] text-status-active">
+          {error}
+        </p>
+      )}
+
+      <div className="mt-6 flex items-center justify-between">
+        <p className="text-[12px] text-ink-faint">
+          Extraction takes about five seconds.
+        </p>
+        <div className="flex items-center gap-3">
+          <a href="/" className="btn-ghost">
+            Cancel
+          </a>
+          <button
+            type="button"
+            disabled={!file || pending}
+            onClick={submit}
+            className="btn-primary"
+          >
+            {pending ? (
+              <Loader2 size={15} className="animate-spin" />
+            ) : (
+              <Sparkles size={15} />
+            )}
+            {pending ? "Extracting…" : "Upload + extract"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}

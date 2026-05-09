@@ -1,0 +1,13 @@
+{
+  "client_reference": "2025/SYN/001",
+  "intimation_date": "2025-08-01",
+  "contract_number": "ARS-2025-0042",
+  "audit_stage": "Stage 1",
+  "audit_date_range": "8/4-9/2025",
+  "audit_man_days": "6",
+  "audit_team": [
+    {"name": "Seth Shea", "role": "Lead Auditor"},
+    {"name": "Allyssa Shea", "role": "Auditor"},
+    {"name": "McKinley Butler", "role": "Observer"}
+  ]
+}

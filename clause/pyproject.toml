@@ -1,0 +1,10 @@
+[project]
+name = "clause"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.12"
+dependencies = [
+    "openai>=2.36.0",
+    "pypdf>=6.10.2",
+    "python-docx>=1.2.0",
+]

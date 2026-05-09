@@ -1,0 +1,7 @@
+observer.kokomo.quest {
+    reverse_proxy localhost:4007
+    encode gzip
+    request_body {
+        max_size 50MB
+    }
+}

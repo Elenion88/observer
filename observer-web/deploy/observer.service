@@ -1,0 +1,23 @@
+[Unit]
+Description=Observer (ISO 9001 audit AI)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=kokomo
+Group=kokomo
+WorkingDirectory=/home/kokomo/observer/observer-web
+Environment=NODE_ENV=production
+Environment=PORT=4007
+Environment=OBSERVER_PY_PROJECT=/home/kokomo/observer/clause
+Environment=PATH=/home/kokomo/.local/bin:/usr/local/bin:/usr/bin:/bin
+EnvironmentFile=-/home/kokomo/.env
+ExecStart=/usr/bin/npx next start -p 4007
+Restart=on-failure
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
