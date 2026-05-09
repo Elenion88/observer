@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, FileUp, Loader2, Play, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowUp, FileUp, Loader2, Sparkles } from "lucide-react";
 import { ExtractionScreen } from "./ExtractionScreen";
 
 const DEMO_QMS_URL = "/demo/qms-demo.pdf";
@@ -129,12 +129,12 @@ export default function NewAuditPage() {
             {demoLoading ? (
               <Loader2 size={16} className="animate-spin" />
             ) : (
-              <Play size={14} className="translate-x-px" />
+              <ArrowUp size={14} strokeWidth={2.25} />
             )}
           </span>
           <div className="flex-1 min-w-0">
             <p className="text-[14px] font-medium text-ink">
-              Try a demo · NWCR Quality Manual
+              Try demo file · NWCR Quality Manual
             </p>
             <p className="text-[12px] text-ink-mute">
               Loads a 90-page sample QMS into the dropzone — then hit
