@@ -17,6 +17,7 @@ import { StageSelectClient } from "./StageSelectClient";
 import { StatusTimeline } from "./StatusTimeline";
 import { ApprovalChip, SectionApprovalFooter } from "./SectionApproval";
 import { CaptureButton } from "./CaptureButton";
+import { UploadEvidenceButton } from "./UploadEvidenceButton";
 
 export const dynamic = "force-dynamic";
 
@@ -40,8 +41,10 @@ export default async function EngagementPage({
     e.organizationName !== "Untitled audit" && e.organizationName !== "";
   const clientLocked = !!e.clientApprovedAt;
   const auditLocked = !!e.auditApprovedAt;
+  const evidenceLocked = !!e.evidenceApprovedAt;
   const clientApprovedISO = e.clientApprovedAt?.toISOString() ?? null;
   const auditApprovedISO = e.auditApprovedAt?.toISOString() ?? null;
+  const evidenceApprovedISO = e.evidenceApprovedAt?.toISOString() ?? null;
 
   return (
     <div className="space-y-10">
@@ -88,12 +91,6 @@ export default async function EngagementPage({
                   </span>
                 ))}
             </p>
-          </div>
-          <div className="shrink-0 mt-1">
-            <CaptureButton
-              engagementId={e.id}
-              count={e.evidence.length}
-            />
           </div>
         </div>
         <StatusTimeline status={status} />
@@ -267,16 +264,48 @@ export default async function EngagementPage({
         </Section>
       </div>
 
-      {/* Evidence — only render when populated. The Capture button in the header
-          handles access when empty. */}
-      {e.evidence.length > 0 && (
-        <Section
-          icon={<Camera size={16} />}
-          eyebrow="Evidence"
-          title={`On-site captures (${e.evidence.length})`}
-          subtitle="Photos your phone fed in. AI labels each shot."
-          full
-        >
+      {/* Evidence — always rendered so the capture/upload affordances are
+          discoverable even when the gallery is empty. */}
+      <Section
+        icon={<Camera size={16} />}
+        eyebrow="Evidence"
+        title={
+          e.evidence.length === 0
+            ? "On-site captures"
+            : `On-site captures (${e.evidence.length})`
+        }
+        subtitle="Photos from the audit. AI labels each shot — click any title to edit."
+        full
+        locked={evidenceLocked}
+        headerSlot={
+          <div className="flex items-center gap-2 flex-wrap justify-end">
+            <ApprovalChip approvedAt={evidenceApprovedISO} />
+            {!evidenceLocked && (
+              <>
+                <UploadEvidenceButton engagementId={e.id} />
+                <CaptureButton
+                  engagementId={e.id}
+                  count={e.evidence.length}
+                />
+              </>
+            )}
+          </div>
+        }
+      >
+        {e.evidence.length === 0 ? (
+          <div className="py-10 text-center">
+            <div className="mx-auto mb-4 h-10 w-10 rounded-full bg-paper-soft flex items-center justify-center">
+              <Camera size={16} className="text-ink-mute" />
+            </div>
+            <p className="text-sm text-ink-mute">No evidence yet.</p>
+            <p className="mt-1 text-[12px] text-ink-faint">
+              Use <span className="font-medium text-ink-mute">Upload evidence</span>{" "}
+              for files on this device, or{" "}
+              <span className="font-medium text-ink-mute">Capture evidence</span>{" "}
+              to scan a QR onto your phone.
+            </p>
+          </div>
+        ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {e.evidence.map((ev) => (
               <EvidenceItem
@@ -286,11 +315,19 @@ export default async function EngagementPage({
                 label={ev.label}
                 caption={ev.caption}
                 createdAt={ev.createdAt.toISOString()}
+                locked={evidenceLocked}
               />
             ))}
           </div>
-        </Section>
-      )}
+        )}
+        {e.evidence.length > 0 && (
+          <SectionApprovalFooter
+            engagementId={e.id}
+            section="evidence"
+            approvedAt={evidenceApprovedISO}
+          />
+        )}
+      </Section>
 
       {/* Documents */}
       <Section

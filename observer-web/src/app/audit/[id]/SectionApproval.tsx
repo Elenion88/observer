@@ -7,6 +7,7 @@ import { setApproval, type ApprovalSection } from "./actions";
 const LABEL: Record<ApprovalSection, string> = {
   client: "Client info",
   audit: "Audit info",
+  evidence: "Evidence",
 };
 
 function formatTime(iso: string): string {

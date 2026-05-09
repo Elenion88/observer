@@ -58,11 +58,15 @@ export async function deleteEvidence(evidenceId: string): Promise<{ ok: true }> 
   return { ok: true };
 }
 
-export type ApprovalSection = "client" | "audit";
+export type ApprovalSection = "client" | "audit" | "evidence";
 
-const SECTION_FIELD: Record<ApprovalSection, "clientApprovedAt" | "auditApprovedAt"> = {
+const SECTION_FIELD: Record<
+  ApprovalSection,
+  "clientApprovedAt" | "auditApprovedAt" | "evidenceApprovedAt"
+> = {
   client: "clientApprovedAt",
   audit: "auditApprovedAt",
+  evidence: "evidenceApprovedAt",
 };
 
 export async function setApproval(

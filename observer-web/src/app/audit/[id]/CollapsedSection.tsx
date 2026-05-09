@@ -7,6 +7,7 @@ import { setApproval, type ApprovalSection } from "./actions";
 const SECTION_LABEL: Record<ApprovalSection, string> = {
   client: "Client",
   audit: "Audit",
+  evidence: "Evidence",
 };
 
 function relTime(iso: string): string {

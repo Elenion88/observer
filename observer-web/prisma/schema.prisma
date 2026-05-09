@@ -36,8 +36,9 @@ model Engagement {
   qmsPath String?
 
   // Section-level approval timestamps. Null = unapproved (editable).
-  clientApprovedAt DateTime?
-  auditApprovedAt  DateTime?
+  clientApprovedAt   DateTime?
+  auditApprovedAt    DateTime?
+  evidenceApprovedAt DateTime?
 
   evidence  Evidence[]
   documents Document[]
