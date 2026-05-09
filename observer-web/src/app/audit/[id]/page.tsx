@@ -48,7 +48,7 @@ export default async function EngagementPage({
       {/* Page header */}
       <header>
         <Link
-          href="/"
+          href="/app"
           className="inline-flex items-center gap-1 text-[12px] text-ink-mute hover:text-ink"
         >
           <ArrowLeft size={13} />

@@ -46,7 +46,7 @@ export function DeckNav() {
           break;
         case "Escape":
           e.preventDefault();
-          router.push("/");
+          router.push("/app");
           break;
       }
     }

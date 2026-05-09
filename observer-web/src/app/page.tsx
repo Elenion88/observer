@@ -1,162 +1,173 @@
 import Link from "next/link";
-import { ArrowUpRight, FileText, Image as ImageIcon, Plus } from "lucide-react";
-import { db } from "@/lib/db";
-import {
-  STATUS_DOT,
-  STATUS_LABEL,
-  STATUS_TEXT,
-  type Status,
-} from "@/lib/status";
+import { ArrowRight, Camera, FileText, Stamp } from "lucide-react";
+import { WaitlistForm } from "./_components/WaitlistForm";
 
-export const dynamic = "force-dynamic";
+export const dynamic = "force-static";
 
-const STATUS_ORDER: Status[] = [
-  "extracting",
-  "stage1_in_progress",
-  "stage2_in_progress",
-  "surveillance_1_in_progress",
-  "surveillance_2_in_progress",
-  "recert_due",
-  "stage1_done",
-  "stage2_done",
-  "surveillance_1_done",
-  "surveillance_2_done",
-  "awaiting_qms",
-  "cert_issued",
+export const metadata = {
+  title: "Observer — the back office for ISO audits",
+  description:
+    "Observer reads your client's quality manual once and drafts the audit packet, so lead auditors spend their time on the audit, not the paperwork.",
+};
+
+export default function Landing() {
+  return (
+    <div className="space-y-24 sm:space-y-32 py-6">
+      <Hero />
+      <Features />
+      <HowItWorks />
+      <SecondaryCTA />
+    </div>
+  );
+}
+
+function Hero() {
+  return (
+    <section className="grid lg:grid-cols-[1.1fr_1fr] gap-12 lg:gap-16 items-start">
+      <div className="pt-4 sm:pt-8">
+        <div className="eyebrow mb-5">Private beta · ISO 9001 · 14001 · 45001</div>
+        <h1 className="font-serif text-[44px] sm:text-[56px] lg:text-[64px] leading-[1.05] tracking-tight text-ink font-medium">
+          The back office for{" "}
+          <span className="text-navy">ISO audits.</span>
+        </h1>
+        <p className="mt-6 text-lg sm:text-xl text-ink-mute leading-relaxed max-w-xl">
+          Observer reads your client&apos;s quality manual once and drafts the
+          full audit packet — Stage 1, Stage 2, surveillance — in seconds. You
+          spend your time on the audit, not on filling forms.
+        </p>
+        <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-ink-mute">
+          <span className="inline-flex items-center gap-2">
+            <span className="h-1.5 w-1.5 rounded-full bg-status-done" />
+            Built with a certified ISO 9001 lead auditor
+          </span>
+          <span className="inline-flex items-center gap-2">
+            <span className="h-1.5 w-1.5 rounded-full bg-status-done" />
+            ~$0.006 of LLM per audit
+          </span>
+        </div>
+      </div>
+      <div id="signup" className="lg:pt-12 scroll-mt-24">
+        <WaitlistForm />
+      </div>
+    </section>
+  );
+}
+
+const FEATURES = [
+  {
+    icon: FileText,
+    title: "Stage-1 packet in five seconds",
+    body: "Drop a client's QMS PDF. Observer fills the audit plan, intimation letter, attendance sheet, and a draft Stage-1 report — pre-populated with the client's organisation details, scope, and contacts.",
+  },
+  {
+    icon: Camera,
+    title: "Capture evidence on-site",
+    body: "On the audit, your phone becomes a labelled evidence camera. Photos and notes attach to the right clause and end up in the report — no end-of-day data entry.",
+  },
+  {
+    icon: Stamp,
+    title: "You stay in charge of every word",
+    body: "Drafts are fully editable. Findings, recommendations, and sign-offs stay yours — Observer just removes the typing tax.",
+  },
 ];
 
-export default async function Home() {
-  const engagements = await db.engagement.findMany({
-    orderBy: { updatedAt: "desc" },
-    include: { _count: { select: { evidence: true, documents: true } } },
-  });
-
-  engagements.sort(
-    (a, b) =>
-      STATUS_ORDER.indexOf(a.status as Status) -
-      STATUS_ORDER.indexOf(b.status as Status)
-  );
-
+function Features() {
   return (
-    <div>
-      <div className="mb-8">
-        <h1 className="font-serif text-[40px] leading-tight font-medium text-ink">
-          Engagements
-        </h1>
-        <p className="mt-1.5 text-sm text-ink-mute">
-          {engagements.length}{" "}
-          {engagements.length === 1 ? "active audit" : "active audits"} across
-          your practice.
-        </p>
+    <section>
+      <div className="max-w-2xl mb-10">
+        <div className="eyebrow mb-3">What it does</div>
+        <h2 className="font-serif text-3xl sm:text-4xl text-ink font-medium leading-tight">
+          The mechanical parts of the audit, handled.
+        </h2>
       </div>
-
-      {engagements.length === 0 ? (
-        <EmptyState />
-      ) : (
-        <div className="card overflow-hidden">
-          <ul className="divide-y divide-line">
-            {engagements.map((e) => {
-              const status = e.status as Status;
-              return (
-                <li key={e.id}>
-                  <Link
-                    href={`/audit/${e.id}`}
-                    className="group flex items-center gap-6 px-6 py-5 hover:bg-paper-soft transition-colors"
-                  >
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2.5">
-                        <span
-                          className={`h-2 w-2 rounded-full ${STATUS_DOT[status]}`}
-                          aria-hidden
-                        />
-                        <span
-                          className={`text-[11px] font-medium uppercase tracking-wider ${STATUS_TEXT[status]}`}
-                        >
-                          {STATUS_LABEL[status]}
-                        </span>
-                      </div>
-                      <h3 className="font-serif text-[22px] leading-tight font-medium text-ink mt-1.5 group-hover:text-navy transition-colors">
-                        {e.organizationName}
-                      </h3>
-                      <div className="mt-1.5 flex items-center gap-4 text-[13px] text-ink-mute flex-wrap">
-                        {e.contactPerson && e.contactPerson !== "—" && (
-                          <span>{e.contactPerson}</span>
-                        )}
-                        {e.auditDateRange && (
-                          <span>
-                            <span className="text-ink-faint">·</span>{" "}
-                            {e.auditDateRange}
-                          </span>
-                        )}
-                        {e.clientReference && (
-                          <span className="font-mono text-[12px] text-ink-faint">
-                            {e.clientReference}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="hidden sm:flex items-center gap-6 text-[12px] text-ink-mute">
-                      <Stat
-                        icon={<ImageIcon size={13} />}
-                        n={e._count.evidence}
-                        label="evidence"
-                      />
-                      <Stat
-                        icon={<FileText size={13} />}
-                        n={e._count.documents}
-                        label="docs"
-                      />
-                    </div>
-
-                    <ArrowUpRight
-                      size={18}
-                      className="text-ink-faint group-hover:text-navy group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition"
-                    />
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      )}
-    </div>
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {FEATURES.map((f) => {
+          const Icon = f.icon;
+          return (
+            <div key={f.title} className="card p-6">
+              <div className="h-10 w-10 rounded-md bg-paper-soft flex items-center justify-center mb-4">
+                <Icon size={18} className="text-navy" />
+              </div>
+              <h3 className="font-serif text-xl text-ink font-medium mb-2">
+                {f.title}
+              </h3>
+              <p className="text-sm text-ink-mute leading-relaxed">{f.body}</p>
+            </div>
+          );
+        })}
+      </div>
+    </section>
   );
 }
 
-function Stat({
-  icon,
-  n,
-  label,
-}: {
-  icon: React.ReactNode;
-  n: number;
-  label: string;
-}) {
+const STEPS = [
+  {
+    n: "01",
+    title: "Upload the client's QMS",
+    body: "One PDF. Observer pulls out the organisation name, address, scope, contacts, and IAF code.",
+  },
+  {
+    n: "02",
+    title: "Review the draft packet",
+    body: "All seven Stage-1 / Stage-2 documents come back filled. Edit anything that doesn't sound like you.",
+  },
+  {
+    n: "03",
+    title: "Run the audit, capture findings",
+    body: "Use Observer on your phone to label evidence as you go. Findings come back into the report draft.",
+  },
+  {
+    n: "04",
+    title: "Export the final packet",
+    body: "Download a zip of native .docx files — same formats your certification body already accepts.",
+  },
+];
+
+function HowItWorks() {
   return (
-    <span className="inline-flex items-center gap-1.5">
-      <span className="text-ink-faint">{icon}</span>
-      <span className="tabular-nums font-medium text-ink-2">{n}</span>
-      <span className="text-ink-faint">{label}</span>
-    </span>
+    <section>
+      <div className="max-w-2xl mb-10">
+        <div className="eyebrow mb-3">How it works</div>
+        <h2 className="font-serif text-3xl sm:text-4xl text-ink font-medium leading-tight">
+          From quality manual to certification-ready packet.
+        </h2>
+      </div>
+      <ol className="grid sm:grid-cols-2 gap-x-8 gap-y-6">
+        {STEPS.map((s) => (
+          <li
+            key={s.n}
+            className="flex gap-5 border-t border-line pt-5 first:border-t-0 sm:border-t-0 sm:pt-0"
+          >
+            <span className="font-mono text-[12px] text-ink-faint pt-1 tabular-nums">
+              {s.n}
+            </span>
+            <div>
+              <h3 className="font-serif text-xl text-ink font-medium mb-1">
+                {s.title}
+              </h3>
+              <p className="text-sm text-ink-mute leading-relaxed">{s.body}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </section>
   );
 }
 
-function EmptyState() {
+function SecondaryCTA() {
   return (
-    <div className="card p-16 text-center">
-      <div className="mx-auto mb-6 h-12 w-12 rounded-full bg-paper-soft flex items-center justify-center">
-        <FileText size={20} className="text-ink-mute" />
-      </div>
-      <h2 className="font-serif text-2xl text-ink">No audits yet</h2>
-      <p className="mt-2 text-sm text-ink-mute max-w-md mx-auto">
-        Drop a client&apos;s QMS PDF and Observer will turn it into a Stage-1
-        packet in about five seconds.
+    <section className="card p-8 sm:p-12 text-center">
+      <h2 className="font-serif text-3xl sm:text-4xl text-ink font-medium leading-tight">
+        Skip the form-filling, not the audit.
+      </h2>
+      <p className="mt-3 text-ink-mute max-w-xl mx-auto">
+        We&apos;re onboarding lead auditors and small audit firms now. Get on the
+        list and we&apos;ll reach out as slots open.
       </p>
-      <Link href="/audit/new" className="btn-primary mt-6 inline-flex">
-        <Plus size={16} />
-        Start your first audit
+      <Link href="#signup" className="btn-primary mt-6 inline-flex">
+        Get early access
+        <ArrowRight size={16} />
       </Link>
-    </div>
+    </section>
   );
 }

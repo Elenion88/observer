@@ -16,7 +16,7 @@ export function Slide({ number, cornerLabel, children, footer }: SlideProps) {
       <header className="flex items-start justify-between font-mono text-[11px] uppercase tracking-[0.2em] text-ink-mute">
         <span>{cornerLabel}</span>
         <Link
-          href="/"
+          href="/app"
           className="hover:text-ink transition-colors"
           title="Exit deck (Esc)"
         >

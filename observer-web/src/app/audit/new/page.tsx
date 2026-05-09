@@ -33,7 +33,7 @@ export default function NewAuditPage() {
   return (
     <div className="mx-auto max-w-xl">
       <a
-        href="/"
+        href="/app"
         className="inline-flex items-center gap-1 text-[12px] text-ink-mute hover:text-ink"
       >
         <ArrowLeft size={13} />
@@ -99,7 +99,7 @@ export default function NewAuditPage() {
           Extraction takes about five seconds.
         </p>
         <div className="flex items-center gap-3">
-          <a href="/" className="btn-ghost">
+          <a href="/app" className="btn-ghost">
             Cancel
           </a>
           <button

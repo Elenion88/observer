@@ -15,7 +15,7 @@ export default function Page() {
         <Rule />
 
         <Link
-          href="/"
+          href="/app"
           className="font-mono text-[clamp(13px,1.1vw,16px)] uppercase tracking-[0.2em] text-ink-mute hover:text-ink"
         >
           → observer.kokomo.quest

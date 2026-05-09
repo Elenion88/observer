@@ -56,6 +56,15 @@ model Evidence {
   caption  String @default("")
 }
 
+model Signup {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  email     String   @unique
+  practice  String   @default("")
+  referrer  String   @default("")
+  userAgent String   @default("")
+}
+
 model Document {
   id           String     @id @default(cuid())
   engagementId String
