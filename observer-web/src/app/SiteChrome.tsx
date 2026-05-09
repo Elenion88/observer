@@ -86,7 +86,11 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
       </main>
       <footer className="mt-10 border-t border-line/70">
         <div className="mx-auto max-w-6xl px-6 py-4 text-xs text-ink-faint flex items-center justify-between">
-          <span>Observer · ISO 9001 audit studio</span>
+          <span>
+            <span className="font-serif font-medium text-navy">Observer</span>
+            <span className="mx-1.5">·</span>
+            ISO 9001 audit studio
+          </span>
           <span>© 2026</span>
         </div>
       </footer>

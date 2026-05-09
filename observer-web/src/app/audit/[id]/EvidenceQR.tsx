@@ -29,12 +29,13 @@ export function EvidenceQR({ engagementId }: { engagementId: string }) {
         <div className="flex items-center gap-2 text-navy">
           <Smartphone size={16} />
           <span className="font-serif text-[18px] font-medium">
-            Capture from your phone
+            Capture, or share with the auditee
           </span>
         </div>
         <p className="mt-1 text-[13px] text-ink-mute leading-relaxed">
-          Scan to open the on-site capture mode. Snap a photo and Observer
-          auto-labels it for the evidence log.
+          Scan to open on-site capture, or send the link to the client&apos;s
+          team and they upload evidence themselves. Each photo auto-labels and
+          lands in the evidence log.
         </p>
         <a
           href={`/audit/${engagementId}/capture`}

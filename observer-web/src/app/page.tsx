@@ -28,21 +28,20 @@ function Hero() {
         <div className="eyebrow mb-5">Private beta · ISO 9001 · 14001 · 45001</div>
         <h1 className="font-serif text-[44px] sm:text-[56px] lg:text-[64px] leading-[1.05] tracking-tight text-ink font-medium">
           The back office for{" "}
-          <span className="text-navy">ISO audits.</span>
+          <span className="text-navy border-b-[3px] border-navy-bright pb-1">
+            ISO audits.
+          </span>
         </h1>
         <p className="mt-6 text-lg sm:text-xl text-ink-mute leading-relaxed max-w-xl">
           Observer reads your client&apos;s quality manual once and drafts the
-          full audit packet — Stage 1, Stage 2, surveillance — in seconds. You
-          spend your time on the audit, not on filling forms.
+          full audit packet — Stage 1, Stage 2, surveillance — in seconds. Your
+          client&apos;s team can even upload evidence photos from the floor
+          themselves. You spend your time on the audit, not on the paperwork.
         </p>
         <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-ink-mute">
           <span className="inline-flex items-center gap-2">
             <span className="h-1.5 w-1.5 rounded-full bg-status-done" />
             Built with a certified ISO 9001 lead auditor
-          </span>
-          <span className="inline-flex items-center gap-2">
-            <span className="h-1.5 w-1.5 rounded-full bg-status-done" />
-            ~$0.006 of LLM per audit
           </span>
         </div>
       </div>
@@ -61,8 +60,8 @@ const FEATURES = [
   },
   {
     icon: Camera,
-    title: "Capture evidence on-site",
-    body: "On the audit, your phone becomes a labelled evidence camera. Photos and notes attach to the right clause and end up in the report — no end-of-day data entry.",
+    title: "Evidence from anywhere",
+    body: "On the audit, your phone is a labelled evidence camera. Off-site, send the client a QR — their team uploads photos straight from the floor. Everything auto-labels and lands in the right clause.",
   },
   {
     icon: Stamp,
@@ -85,7 +84,7 @@ function Features() {
           const Icon = f.icon;
           return (
             <div key={f.title} className="card p-6">
-              <div className="h-10 w-10 rounded-md bg-paper-soft flex items-center justify-center mb-4">
+              <div className="h-10 w-10 rounded-md bg-navy-bright/10 ring-1 ring-navy-bright/20 flex items-center justify-center mb-4">
                 <Icon size={18} className="text-navy" />
               </div>
               <h3 className="font-serif text-xl text-ink font-medium mb-2">
@@ -113,8 +112,8 @@ const STEPS = [
   },
   {
     n: "03",
-    title: "Run the audit, capture findings",
-    body: "Use Observer on your phone to label evidence as you go. Findings come back into the report draft.",
+    title: "Collect evidence — together",
+    body: "Capture photos on your phone during the audit, or share a QR so the auditee uploads from the office floor. Each photo auto-labels and attaches to the right clause.",
   },
   {
     n: "04",
@@ -138,7 +137,7 @@ function HowItWorks() {
             key={s.n}
             className="flex gap-5 border-t border-line pt-5 first:border-t-0 sm:border-t-0 sm:pt-0"
           >
-            <span className="font-mono text-[12px] text-ink-faint pt-1 tabular-nums">
+            <span className="font-mono text-[12px] font-medium text-navy-bright pt-1 tabular-nums">
               {s.n}
             </span>
             <div>

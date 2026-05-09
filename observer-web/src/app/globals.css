@@ -20,7 +20,8 @@
 
   /* accent */
   --navy:         #0f2d4a;  /* primary buttons, wordmark, focus rings */
-  --navy-soft:    #1c4570;  /* hover */
+  --navy-soft:    #1c4570;  /* hover, eyebrows, secondary navy text */
+  --navy-bright:  #2a5fb8;  /* highlight accents — step numbers, underlines */
   --link:         #1d4ed8;  /* signal blue for links */
 
   /* status */
@@ -57,6 +58,7 @@
   --color-ink-faint: var(--ink-faint);
   --color-navy: var(--navy);
   --color-navy-soft: var(--navy-soft);
+  --color-navy-bright: var(--navy-bright);
   --color-link: var(--link);
   --color-status-await: var(--status-await);
   --color-status-active: var(--status-active);
@@ -95,7 +97,7 @@ h1, h2, h3, .font-serif {
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--ink-mute);
+  color: var(--navy-soft);
 }
 
 /* Auto-extracted inputs feel like pre-filled paper, not a settings UI */
