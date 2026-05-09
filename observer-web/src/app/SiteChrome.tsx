@@ -39,9 +39,12 @@ export function SiteHeader() {
           <Link href="/" className="group">
             <Wordmark />
           </Link>
-          <nav className="flex items-center gap-4 text-sm text-ink-mute">
-            <Link href="/app" className="hover:text-ink">
-              Sign in
+          <nav className="flex items-center gap-3 text-sm text-ink-mute">
+            <Link
+              href="/app"
+              className="btn-secondary !py-1.5 !px-3 !text-[13px]"
+            >
+              Launch
             </Link>
             <WaitlistButton className="btn-primary !py-1.5 !px-3 !text-[13px]">
               Get early access
