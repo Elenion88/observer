@@ -1,5 +1,7 @@
 "use server";
 
+import { rm } from "node:fs/promises";
+import path from "node:path";
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 
@@ -68,6 +70,21 @@ const SECTION_FIELD: Record<
   audit: "auditApprovedAt",
   evidence: "evidenceApprovedAt",
 };
+
+export async function deleteEngagement(id: string): Promise<{ ok: true }> {
+  // Cascade rules in the Prisma schema clean up Evidence + Document rows.
+  await db.engagement.delete({ where: { id } }).catch(() => {});
+  // Then sweep up the upload directories that were namespaced by engagement id.
+  const root = path.resolve(process.cwd(), "uploads");
+  const dirs = ["qms", "evidence", "docs"].map((kind) =>
+    path.join(root, kind, id)
+  );
+  for (const d of dirs) {
+    await rm(d, { recursive: true, force: true }).catch(() => {});
+  }
+  revalidatePath("/app");
+  return { ok: true };
+}
 
 export async function setApproval(
   id: string,

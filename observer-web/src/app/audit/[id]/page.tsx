@@ -18,6 +18,7 @@ import { StatusTimeline } from "./StatusTimeline";
 import { ApprovalChip, SectionApprovalFooter } from "./SectionApproval";
 import { CaptureButton } from "./CaptureButton";
 import { UploadEvidenceButton } from "./UploadEvidenceButton";
+import { DangerZone } from "./DangerZone";
 export const dynamic = "force-dynamic";
 
 export default async function EngagementPage({
@@ -44,40 +45,6 @@ export default async function EngagementPage({
   const clientApprovedISO = e.clientApprovedAt?.toISOString() ?? null;
   const auditApprovedISO = e.auditApprovedAt?.toISOString() ?? null;
   const evidenceApprovedISO = e.evidenceApprovedAt?.toISOString() ?? null;
-
-  // Per-section blank counts. Excluded when the section is locked (the chip
-  // only matters when the field is editable).
-  const blank = (s: string) => s.trim() === "";
-  const clientBlanks = clientLocked
-    ? 0
-    : [
-        e.organizationName,
-        e.postalAddress,
-        e.contactPerson,
-        e.contactDesignation,
-        e.contactNumber,
-        e.contactEmail,
-        e.auditScope,
-        e.employeeCount,
-        e.iafCode,
-      ].filter(blank).length;
-  const auditTeam: unknown[] = (() => {
-    try {
-      const parsed = JSON.parse(e.auditTeamJson || "[]");
-      return Array.isArray(parsed) ? parsed : [];
-    } catch {
-      return [];
-    }
-  })();
-  const auditBlanks = auditLocked
-    ? 0
-    : [
-        e.clientReference,
-        e.contractNumber,
-        e.intimationDate,
-        e.auditDateRange,
-        e.auditManDays,
-      ].filter(blank).length + (auditTeam.length === 0 ? 1 : 0);
 
   return (
     <div className="space-y-10">
@@ -138,12 +105,7 @@ export default async function EngagementPage({
           eyebrow="Client"
           title="Who they are"
           subtitle="Auto-extracted from the QMS. Click any field to refine."
-          headerSlot={
-            <div className="flex items-center gap-2">
-              <BlankCountChip count={clientBlanks} scopeId="section-client" />
-              <ApprovalChip approvedAt={clientApprovedISO} />
-            </div>
-          }
+          headerSlot={<ApprovalChip approvedAt={clientApprovedISO} />}
           locked={clientLocked}
         >
           <div className="space-y-5">
@@ -232,12 +194,7 @@ export default async function EngagementPage({
           eyebrow="Audit"
           title="The engagement"
           subtitle="What you, the auditor, bring to the file."
-          headerSlot={
-            <div className="flex items-center gap-2">
-              <BlankCountChip count={auditBlanks} scopeId="section-audit" />
-              <ApprovalChip approvedAt={auditApprovedISO} />
-            </div>
-          }
+          headerSlot={<ApprovalChip approvedAt={auditApprovedISO} />}
           locked={auditLocked}
         >
           <div className="space-y-5">
@@ -395,6 +352,8 @@ export default async function EngagementPage({
           auditStage={e.auditStage}
         />
       </Section>
+
+      <DangerZone engagementId={e.id} orgName={e.organizationName} />
     </div>
   );
 }

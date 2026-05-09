@@ -45,7 +45,22 @@ export async function POST(req: NextRequest) {
         status: "stage1_in_progress",
       },
     });
-    return NextResponse.json({ id: engagement.id });
+    return NextResponse.json({
+      id: engagement.id,
+      fields: {
+        organizationName: fields.organization_name || "",
+        postalAddress: fields.postal_address || "",
+        auditSite: fields.audit_site || "",
+        contactPerson: fields.contact_person || "",
+        contactDesignation: fields.contact_designation || "",
+        contactNumber: fields.contact_number || "",
+        contactEmail: fields.contact_email || "",
+        auditScope: fields.audit_scope || "",
+        employeeCount: fields.employee_count || "",
+        iafCode: fields.iaf_code || "",
+        standards: fields.standards || [],
+      },
+    });
   } catch (err) {
     console.error("extraction failed", err);
     await db.engagement.update({

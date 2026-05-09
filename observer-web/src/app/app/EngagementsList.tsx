@@ -10,6 +10,7 @@ import {
   Search,
   X,
 } from "lucide-react";
+import { RowMenu } from "./RowMenu";
 import {
   STATUS_DOT,
   STATUS_LABEL,
@@ -366,10 +367,13 @@ export function EngagementsList({ rows }: { rows: EngagementRow[] }) {
               const isActive =
                 status === "extracting" || status.endsWith("_in_progress");
               return (
-                <li key={e.id}>
+                <li
+                  key={e.id}
+                  className="group relative flex items-stretch hover:bg-paper-soft transition-colors"
+                >
                   <Link
                     href={`/audit/${e.id}`}
-                    className="group flex items-center gap-6 px-6 py-5 hover:bg-paper-soft transition-colors"
+                    className="flex-1 flex items-center gap-6 px-6 py-5 min-w-0"
                   >
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2.5">
@@ -424,6 +428,12 @@ export function EngagementsList({ rows }: { rows: EngagementRow[] }) {
                       className="text-ink-faint group-hover:text-navy group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition"
                     />
                   </Link>
+                  <div className="flex items-center pr-3">
+                    <RowMenu
+                      engagementId={e.id}
+                      orgName={e.organizationName}
+                    />
+                  </div>
                 </li>
               );
             })}

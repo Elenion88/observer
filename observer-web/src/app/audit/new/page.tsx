@@ -1,47 +1,37 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { ArrowLeft, FileUp, Loader2, Play, Sparkles } from "lucide-react";
+import { ExtractionScreen } from "./ExtractionScreen";
 
 const DEMO_QMS_URL = "/demo/qms-demo.pdf";
 const DEMO_QMS_NAME = "NWCR-QSEMS_v2.2.pdf";
 
 export default function NewAuditPage() {
-  const router = useRouter();
   const [file, setFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [pending, startTransition] = useTransition();
   const [demoLoading, setDemoLoading] = useState(false);
   const [isDemo, setIsDemo] = useState(false);
-
-  const uploadFile = (toUpload: File) => {
-    setError(null);
-    startTransition(async () => {
-      const fd = new FormData();
-      fd.append("qms", toUpload);
-      const res = await fetch("/api/engagement/new", {
-        method: "POST",
-        body: fd,
-      });
-      if (!res.ok) {
-        const j = await res.json().catch(() => ({}));
-        setError(j.error || `Upload failed (${res.status})`);
-        return;
-      }
-      const j = await res.json();
-      router.push(`/audit/${j.id}`);
-    });
-  };
+  const [submitted, setSubmitted] = useState<File | null>(null);
 
   const submit = () => {
     if (!file) return;
-    uploadFile(file);
+    setError(null);
+    setSubmitted(file);
   };
 
+  if (submitted) {
+    return (
+      <ExtractionScreen
+        file={submitted}
+        onCancel={() => setSubmitted(null)}
+      />
+    );
+  }
+
   const loadDemo = async () => {
-    if (demoLoading || pending) return;
+    if (demoLoading) return;
     setError(null);
     setDemoLoading(true);
     try {
@@ -131,7 +121,7 @@ export default function NewAuditPage() {
       <button
         type="button"
         onClick={loadDemo}
-        disabled={demoLoading || pending}
+        disabled={demoLoading}
         className="mt-4 w-full rounded-[var(--radius)] border border-line bg-paper-card px-4 py-3 text-left transition-colors hover:bg-paper-soft hover:border-line-strong disabled:opacity-60 disabled:cursor-not-allowed"
       >
         <div className="flex items-center gap-3">
@@ -171,16 +161,12 @@ export default function NewAuditPage() {
           </Link>
           <button
             type="button"
-            disabled={!file || pending}
+            disabled={!file}
             onClick={submit}
             className="btn-primary"
           >
-            {pending ? (
-              <Loader2 size={15} className="animate-spin" />
-            ) : (
-              <Sparkles size={15} />
-            )}
-            {pending ? "Extracting…" : "Upload + extract"}
+            <Sparkles size={15} />
+            Upload + extract
           </button>
         </div>
       </div>
