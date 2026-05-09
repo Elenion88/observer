@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import { WaitlistButton } from "./_components/WaitlistModal";
 
 function isBarePath(pathname: string | null) {
   if (!pathname) return false;
@@ -31,12 +32,9 @@ export function SiteHeader() {
             <a href="/app" className="hover:text-ink">
               Sign in
             </a>
-            <a
-              href="#signup"
-              className="btn-primary !py-1.5 !px-3 !text-[13px]"
-            >
+            <WaitlistButton className="btn-primary !py-1.5 !px-3 !text-[13px]">
               Get early access
-            </a>
+            </WaitlistButton>
           </nav>
         </div>
       </header>

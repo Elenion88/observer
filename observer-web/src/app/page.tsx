@@ -1,6 +1,5 @@
-import Link from "next/link";
-import { ArrowRight, Camera, FileText, Stamp } from "lucide-react";
-import { WaitlistForm } from "./_components/WaitlistForm";
+import { ArrowRight, Camera, Check, FileText, Stamp } from "lucide-react";
+import { WaitlistButton } from "./_components/WaitlistModal";
 
 export const dynamic = "force-static";
 
@@ -23,7 +22,7 @@ export default function Landing() {
 
 function Hero() {
   return (
-    <section className="grid lg:grid-cols-[1.1fr_1fr] gap-12 lg:gap-16 items-start">
+    <section className="grid lg:grid-cols-[1.15fr_1fr] gap-12 lg:gap-16 items-center">
       <div className="pt-4 sm:pt-8">
         <div className="eyebrow mb-5">Private beta · ISO 9001 · 14001 · 45001</div>
         <h1 className="font-serif text-[44px] sm:text-[56px] lg:text-[64px] leading-[1.05] tracking-tight text-ink font-medium">
@@ -38,17 +37,79 @@ function Hero() {
           client&apos;s team can even upload evidence photos from the floor
           themselves. You spend your time on the audit, not on the paperwork.
         </p>
-        <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-ink-mute">
-          <span className="inline-flex items-center gap-2">
+        <div className="mt-8 flex flex-wrap items-center gap-4">
+          <WaitlistButton className="btn-primary text-base !py-3 !px-5">
+            Get early access
+            <ArrowRight size={16} />
+          </WaitlistButton>
+          <span className="inline-flex items-center gap-2 text-sm text-ink-mute">
             <span className="h-1.5 w-1.5 rounded-full bg-status-done" />
             Built with a certified ISO 9001 lead auditor
           </span>
         </div>
       </div>
-      <div id="signup" className="lg:pt-12 scroll-mt-24">
-        <WaitlistForm />
-      </div>
+      <HeroPreview />
     </section>
+  );
+}
+
+const PREVIEW_DOCS = [
+  { kind: "Stage-1 Audit Plan", note: "Auto-filled from QMS" },
+  { kind: "Intimation Letter", note: "Stage 1 + Stage 2" },
+  { kind: "Attendance Sheet", note: "Team + observer" },
+  { kind: "Stage-1 Audit Report", note: "Findings draft ready" },
+];
+
+function HeroPreview() {
+  return (
+    <div className="relative">
+      <div className="absolute -inset-x-4 -inset-y-6 bg-gradient-to-br from-navy-bright/10 to-transparent rounded-[var(--radius-lg)] -z-10" />
+      <div className="card p-6 sm:p-7">
+        <div className="flex items-center justify-between mb-5">
+          <div>
+            <div className="eyebrow text-[10px] mb-1">Engagement · Syndeticom</div>
+            <div className="font-serif text-[20px] text-ink font-medium leading-tight">
+              Stage-1 packet
+            </div>
+          </div>
+          <div className="text-right">
+            <div className="font-mono text-[11px] uppercase tracking-wider text-status-done">
+              Ready
+            </div>
+            <div className="font-mono text-[11px] text-ink-faint mt-0.5">
+              4.7s
+            </div>
+          </div>
+        </div>
+        <ul className="space-y-2">
+          {PREVIEW_DOCS.map((d) => (
+            <li
+              key={d.kind}
+              className="flex items-center gap-3 px-3 py-2.5 rounded-md bg-paper-soft/60 ring-1 ring-line/70"
+            >
+              <span className="h-7 w-7 rounded bg-navy-bright/10 ring-1 ring-navy-bright/25 flex items-center justify-center flex-shrink-0">
+                <FileText size={13} className="text-navy" />
+              </span>
+              <div className="flex-1 min-w-0">
+                <div className="text-[13px] font-medium text-ink truncate">
+                  {d.kind}
+                </div>
+                <div className="text-[11px] text-ink-mute truncate">
+                  {d.note}
+                </div>
+              </div>
+              <Check size={14} className="text-status-done flex-shrink-0" />
+            </li>
+          ))}
+        </ul>
+        <div className="mt-5 flex items-center justify-between text-[12px] text-ink-mute">
+          <span className="font-mono">.docx · Word-compatible</span>
+          <span className="inline-flex items-center gap-1.5 text-navy-bright font-medium">
+            Download zip <ArrowRight size={12} />
+          </span>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -163,10 +224,10 @@ function SecondaryCTA() {
         We&apos;re onboarding lead auditors and small audit firms now. Get on the
         list and we&apos;ll reach out as slots open.
       </p>
-      <Link href="#signup" className="btn-primary mt-6 inline-flex">
+      <WaitlistButton className="btn-primary mt-6 inline-flex">
         Get early access
         <ArrowRight size={16} />
-      </Link>
+      </WaitlistButton>
     </section>
   );
 }

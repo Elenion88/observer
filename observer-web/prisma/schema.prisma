@@ -57,12 +57,14 @@ model Evidence {
 }
 
 model Signup {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  email     String   @unique
-  practice  String   @default("")
-  referrer  String   @default("")
-  userAgent String   @default("")
+  id           String   @id @default(cuid())
+  createdAt    DateTime @default(now())
+  email        String   @unique
+  practice     String   @default("")
+  source       String   @default("")
+  problemsJson String   @default("[]")
+  referrer     String   @default("")
+  userAgent    String   @default("")
 }
 
 model Document {

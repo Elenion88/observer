@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Fraunces, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { SiteHeader, SiteShell } from "./SiteChrome";
+import { WaitlistProvider } from "./_components/WaitlistModal";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -38,8 +39,10 @@ export default function RootLayout({
       className={`${inter.variable} ${fraunces.variable} ${geistMono.variable} h-full`}
     >
       <body className="min-h-full flex flex-col antialiased">
-        <SiteHeader />
-        <SiteShell>{children}</SiteShell>
+        <WaitlistProvider>
+          <SiteHeader />
+          <SiteShell>{children}</SiteShell>
+        </WaitlistProvider>
       </body>
     </html>
   );
