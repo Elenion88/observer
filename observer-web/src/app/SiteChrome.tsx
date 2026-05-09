@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { WaitlistButton } from "./_components/WaitlistModal";
 
@@ -12,6 +13,24 @@ function isLandingPath(pathname: string | null) {
   return pathname === "/";
 }
 
+function Wordmark({ tagline }: { tagline: string }) {
+  return (
+    <span className="flex items-baseline gap-3">
+      <Image
+        src="/logo.png"
+        alt="Observer"
+        width={916}
+        height={247}
+        priority
+        className="h-7 w-auto"
+      />
+      <span className="hidden sm:inline italic text-sm text-ink-mute">
+        — {tagline}
+      </span>
+    </span>
+  );
+}
+
 export function SiteHeader() {
   const pathname = usePathname();
   if (isBarePath(pathname)) return null;
@@ -20,13 +39,8 @@ export function SiteHeader() {
     return (
       <header className="border-b border-line bg-paper-card/60 backdrop-blur supports-[backdrop-filter]:bg-paper-card/60">
         <div className="mx-auto max-w-6xl px-6 py-4 flex items-center justify-between">
-          <a href="/" className="flex items-baseline gap-3 group">
-            <span className="font-serif text-[22px] font-medium tracking-tight text-navy">
-              Observer
-            </span>
-            <span className="hidden sm:inline italic text-sm text-ink-mute">
-              — the back office for ISO audits
-            </span>
+          <a href="/" className="group">
+            <Wordmark tagline="the back office for ISO audits" />
           </a>
           <nav className="flex items-center gap-4 text-sm text-ink-mute">
             <a href="/app" className="hover:text-ink">
@@ -44,13 +58,8 @@ export function SiteHeader() {
   return (
     <header className="border-b border-line bg-paper-card/60 backdrop-blur supports-[backdrop-filter]:bg-paper-card/60">
       <div className="mx-auto max-w-6xl px-6 py-4 flex items-center justify-between">
-        <a href="/app" className="flex items-baseline gap-3 group">
-          <span className="font-serif text-[22px] font-medium tracking-tight text-navy">
-            Observer
-          </span>
-          <span className="hidden sm:inline italic text-sm text-ink-mute">
-            — the back office for the audit
-          </span>
+        <a href="/app" className="group">
+          <Wordmark tagline="the back office for the audit" />
         </a>
         <nav className="flex items-center gap-4 text-sm text-ink-mute">
           <a href="/app" className="hover:text-ink">
