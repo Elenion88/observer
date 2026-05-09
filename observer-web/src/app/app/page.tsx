@@ -57,6 +57,8 @@ export default async function Home() {
           <ul className="divide-y divide-line">
             {engagements.map((e) => {
               const status = e.status as Status;
+              const isActive =
+                status === "extracting" || status.endsWith("_in_progress");
               return (
                 <li key={e.id}>
                   <Link
@@ -66,7 +68,9 @@ export default async function Home() {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2.5">
                         <span
-                          className={`h-2 w-2 rounded-full ${STATUS_DOT[status]}`}
+                          className={`h-2 w-2 rounded-full ${STATUS_DOT[status]} ${
+                            isActive ? "status-pulse" : ""
+                          }`}
                           aria-hidden
                         />
                         <span

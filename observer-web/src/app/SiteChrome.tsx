@@ -1,8 +1,10 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { WaitlistButton } from "./_components/WaitlistModal";
+import { RouteTransition } from "./_components/RouteTransition";
 
 function isBarePath(pathname: string | null) {
   if (!pathname) return false;
@@ -34,13 +36,13 @@ export function SiteHeader() {
     return (
       <header className="border-b border-line bg-paper-card/60 backdrop-blur supports-[backdrop-filter]:bg-paper-card/60">
         <div className="mx-auto max-w-6xl px-6 py-4 flex items-center justify-between">
-          <a href="/" className="group">
+          <Link href="/" className="group">
             <Wordmark />
-          </a>
+          </Link>
           <nav className="flex items-center gap-4 text-sm text-ink-mute">
-            <a href="/app" className="hover:text-ink">
+            <Link href="/app" className="hover:text-ink">
               Sign in
-            </a>
+            </Link>
             <WaitlistButton className="btn-primary !py-1.5 !px-3 !text-[13px]">
               Get early access
             </WaitlistButton>
@@ -53,22 +55,22 @@ export function SiteHeader() {
   return (
     <header className="border-b border-line bg-paper-card/60 backdrop-blur supports-[backdrop-filter]:bg-paper-card/60">
       <div className="mx-auto max-w-6xl px-6 py-4 flex items-center justify-between">
-        <a href="/app" className="group">
+        <Link href="/app" className="group">
           <Wordmark />
-        </a>
+        </Link>
         <nav className="flex items-center gap-4 text-sm text-ink-mute">
-          <a href="/app" className="hover:text-ink">
+          <Link href="/app" className="hover:text-ink">
             Engagements
-          </a>
-          <a href="/deck" className="hover:text-ink">
+          </Link>
+          <Link href="/deck" className="hover:text-ink">
             Pitch deck&nbsp;↗
-          </a>
-          <a
+          </Link>
+          <Link
             href="/audit/new"
             className="btn-primary !py-1.5 !px-3 !text-[13px]"
           >
             + New audit
-          </a>
+          </Link>
         </nav>
       </div>
     </header>
@@ -81,7 +83,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
   return (
     <>
       <main className="flex-1 mx-auto w-full max-w-6xl px-6 py-10">
-        {children}
+        <RouteTransition>{children}</RouteTransition>
       </main>
       <footer className="mt-10 border-t border-line/70">
         <div className="mx-auto max-w-6xl px-6 py-4 text-xs text-ink-faint flex items-center justify-between">

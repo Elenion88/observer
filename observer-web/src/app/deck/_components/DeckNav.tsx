@@ -12,6 +12,13 @@ export function DeckNav() {
   useEffect(() => {
     if (!pathname.startsWith("/deck")) return;
 
+    // Warm adjacent slides so arrow-key nav feels instantaneous.
+    const i = ORDER.indexOf(pathname as (typeof ORDER)[number]);
+    if (i !== -1) {
+      if (i + 1 < ORDER.length) router.prefetch(ORDER[i + 1]);
+      if (i - 1 >= 0) router.prefetch(ORDER[i - 1]);
+    }
+
     function go(delta: number) {
       const i = ORDER.indexOf(pathname as (typeof ORDER)[number]);
       if (i === -1) return;

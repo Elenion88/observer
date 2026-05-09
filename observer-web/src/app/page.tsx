@@ -12,10 +12,10 @@ export const metadata = {
 export default function Landing() {
   return (
     <div className="space-y-24 sm:space-y-32 py-6">
-      <Hero />
-      <Features />
-      <HowItWorks />
-      <SecondaryCTA />
+      <div className="reveal reveal-1"><Hero /></div>
+      <div className="reveal reveal-2"><Features /></div>
+      <div className="reveal reveal-3"><HowItWorks /></div>
+      <div className="reveal reveal-4"><SecondaryCTA /></div>
     </div>
   );
 }

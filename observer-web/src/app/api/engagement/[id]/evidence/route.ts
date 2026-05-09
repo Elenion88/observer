@@ -45,15 +45,20 @@ export async function POST(
 
   // Fire labelling in the background (no await) so the client can render the
   // photo immediately and pick up the label via polling when it lands.
+  // updateMany with `label: ""` filter so a manual label set in the meantime
+  // (by the user) is never overwritten by the AI.
   void labelImageFromPath(fileAbs)
     .then((label) =>
-      db.evidence.update({ where: { id: ev.id }, data: { label } })
+      db.evidence.updateMany({
+        where: { id: ev.id, label: "" },
+        data: { label },
+      })
     )
     .catch(async (err) => {
       console.error("[evidence] background label failed:", err);
       await db.evidence
-        .update({
-          where: { id: ev.id },
+        .updateMany({
+          where: { id: ev.id, label: "" },
           data: { label: "(label unavailable)" },
         })
         .catch(() => {});

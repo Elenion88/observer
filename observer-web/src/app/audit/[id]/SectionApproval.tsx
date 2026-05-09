@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { Check, Loader2, Lock, Pencil } from "lucide-react";
 import { setApproval, type ApprovalSection } from "./actions";
+import { flushAllPendingLabels } from "./pendingLabelSaves";
 
 const LABEL: Record<ApprovalSection, string> = {
   client: "Client info",
@@ -44,7 +45,19 @@ export function SectionApprovalFooter({
   const [pending, startTransition] = useTransition();
 
   const onApprove = () => {
+    // Force any focused input to blur so its onBlur save handler runs, then
+    // flush the registered pending label saves. This way the section never
+    // locks with typed-but-not-saved text in flight.
+    if (typeof document !== "undefined") {
+      const active = document.activeElement;
+      if (active instanceof HTMLElement && active !== document.body) {
+        active.blur();
+      }
+    }
     startTransition(async () => {
+      if (section === "evidence") {
+        await flushAllPendingLabels();
+      }
       const res = await setApproval(engagementId, section, true);
       setOptimistic(res.approvedAt);
     });

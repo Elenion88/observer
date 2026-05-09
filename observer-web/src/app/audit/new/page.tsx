@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, FileUp, Loader2, Sparkles } from "lucide-react";
 
@@ -99,9 +100,9 @@ export default function NewAuditPage() {
           Extraction takes about five seconds.
         </p>
         <div className="flex items-center gap-3">
-          <a href="/app" className="btn-ghost">
+          <Link href="/app" className="btn-ghost">
             Cancel
-          </a>
+          </Link>
           <button
             type="button"
             disabled={!file || pending}
