@@ -24,11 +24,13 @@ rsync -az --delete \
 echo "==> rsync web app"
 rsync -az --delete \
   --exclude 'node_modules' --exclude '.next' --exclude 'uploads' \
+  --exclude '.env' --exclude 'dev.db' --exclude 'dev.db-journal' \
   "$WEB_SRC/" "$REMOTE:$WEB_DST/"
 
 echo "==> remote install + build"
 ssh "$REMOTE" "
   set -e
+  export PATH=\"\$HOME/.local/bin:\$HOME/.cargo/bin:/usr/local/bin:\$PATH\"
   cd $PY_DST && uv sync
   cd $WEB_DST
   test -f .env || cp ~/.env .env || true
