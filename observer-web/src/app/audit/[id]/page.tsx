@@ -204,7 +204,7 @@ export default async function EngagementPage({
                 field="clientReference"
                 initialValue={e.clientReference}
                 label="Client reference"
-                placeholder="2026/ABC/001"
+                placeholder="e.g. 2026/ABC/001"
                 locked={auditLocked}
               />
               <EditableField
@@ -212,7 +212,7 @@ export default async function EngagementPage({
                 field="contractNumber"
                 initialValue={e.contractNumber}
                 label="Contract no."
-                placeholder="ARS-2026-0042"
+                placeholder="e.g. ARS-2026-0042"
                 locked={auditLocked}
               />
             </div>
@@ -222,7 +222,7 @@ export default async function EngagementPage({
                 field="intimationDate"
                 initialValue={e.intimationDate}
                 label="Intimation date"
-                placeholder="2026-05-08"
+                placeholder="e.g. 2026-05-08"
                 locked={auditLocked}
               />
               <EditableField
@@ -230,7 +230,7 @@ export default async function EngagementPage({
                 field="auditDateRange"
                 initialValue={e.auditDateRange}
                 label="Audit dates"
-                placeholder="6/12-15/2026"
+                placeholder="e.g. 6/12-15/2026"
                 locked={auditLocked}
               />
             </div>

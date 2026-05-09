@@ -171,12 +171,21 @@ export function ExtractionScreen({
           <span className="font-serif text-[28px] text-ink-faint -translate-y-1">
             →
           </span>
-          <div className="text-left">
+          <div className="text-left" style={{ width: 280 }}>
             <p className="text-[11px] uppercase tracking-wider text-navy-soft font-medium">
               {phase === "complete" ? "Done in" : "Observer"}
             </p>
-            <p className="font-serif text-[64px] leading-none font-medium text-navy tabular-nums">
-              0:{elapsedDisplay}
+            <p className="text-[64px] leading-none font-medium text-navy flex items-baseline">
+              <span
+                className="font-mono tabular-nums tracking-tight inline-block text-left"
+                style={{
+                  width: 230,
+                  fontFeatureSettings: '"tnum" 1',
+                  fontVariantNumeric: "tabular-nums",
+                }}
+              >
+                0:{elapsedDisplay}
+              </span>
               <span className="text-[28px] text-ink-faint ml-1">s</span>
             </p>
           </div>
