@@ -50,6 +50,18 @@ const GROUP_LABEL: Record<GroupKey, string> = {
   recert_due: "Recert due",
 };
 
+// Status dot color per group, drawn from the same status palette used on
+// engagement cards so the filter row reads as the same visual language.
+const GROUP_DOT: Record<GroupKey, string> = {
+  active: "bg-status-active",
+  awaiting_qms: "bg-status-grey",
+  stage1_ready: "bg-status-done",
+  stage2_ready: "bg-status-done",
+  surveillance: "bg-status-done",
+  recert_due: "bg-status-await",
+  certified: "bg-status-cert",
+};
+
 const GROUP_ORDER: GroupKey[] = [
   "active",
   "awaiting_qms",
@@ -113,19 +125,26 @@ function parseFirstDate(s: string): number {
   if (!s) return Number.MAX_SAFE_INTEGER;
   const iso = s.match(/(\d{4})-(\d{1,2})-(\d{1,2})/);
   if (iso) {
-    const t = Date.parse(`${iso[1]}-${iso[2].padStart(2, "0")}-${iso[3].padStart(2, "0")}`);
+    const t = Date.parse(
+      `${iso[1]}-${iso[2].padStart(2, "0")}-${iso[3].padStart(2, "0")}`
+    );
     if (!Number.isNaN(t)) return t;
   }
   const mdy = s.match(/(\d{1,2})\/(\d{1,2})(?:-\d{1,2})?\/(\d{2,4})/);
   if (mdy) {
     const yr = mdy[3].length === 2 ? `20${mdy[3]}` : mdy[3];
-    const t = Date.parse(`${yr}-${mdy[1].padStart(2, "0")}-${mdy[2].padStart(2, "0")}`);
+    const t = Date.parse(
+      `${yr}-${mdy[1].padStart(2, "0")}-${mdy[2].padStart(2, "0")}`
+    );
     if (!Number.isNaN(t)) return t;
   }
   return Number.MAX_SAFE_INTEGER;
 }
 
-function sortEngagements(rows: EngagementRow[], sort: SortKey): EngagementRow[] {
+function sortEngagements(
+  rows: EngagementRow[],
+  sort: SortKey
+): EngagementRow[] {
   const arr = [...rows];
   switch (sort) {
     case "name_az":
@@ -144,17 +163,18 @@ function sortEngagements(rows: EngagementRow[], sort: SortKey): EngagementRow[] 
       break;
     case "intimation":
       arr.sort(
-        (a, b) => parseFirstDate(a.intimationDate) - parseFirstDate(b.intimationDate)
+        (a, b) =>
+          parseFirstDate(a.intimationDate) - parseFirstDate(b.intimationDate)
       );
       break;
     case "audit_date":
       arr.sort(
-        (a, b) => parseFirstDate(a.auditDateRange) - parseFirstDate(b.auditDateRange)
+        (a, b) =>
+          parseFirstDate(a.auditDateRange) - parseFirstDate(b.auditDateRange)
       );
       break;
     case "updated":
     default:
-      // updatedAt desc, then status rank for tiebreaks
       arr.sort((a, b) => {
         const t = Date.parse(b.updatedAt) - Date.parse(a.updatedAt);
         if (t !== 0) return t;
@@ -170,22 +190,43 @@ export function EngagementsList({ rows }: { rows: EngagementRow[] }) {
   const [sort, setSort] = useState<SortKey>("updated");
   const [groups, setGroups] = useState<Set<GroupKey>>(new Set());
 
-  const filtered = useMemo(() => {
+  // Search applies to both the per-group counts and the visible list, so the
+  // numbers next to each filter reflect what clicking it would yield.
+  const searched = useMemo(() => {
     const needle = q.trim().toLowerCase();
-    let arr = rows;
-    if (needle) {
-      arr = arr.filter((r) => {
-        const hay = [
-          r.organizationName,
-          r.contactPerson,
-          r.contractNumber,
-          r.clientReference,
-        ]
-          .join("")
-          .toLowerCase();
-        return hay.includes(needle);
-      });
+    if (!needle) return rows;
+    return rows.filter((r) => {
+      const hay = [
+        r.organizationName,
+        r.contactPerson,
+        r.contractNumber,
+        r.clientReference,
+      ]
+        .join(" ")
+        .toLowerCase();
+      return hay.includes(needle);
+    });
+  }, [rows, q]);
+
+  const groupCounts = useMemo(() => {
+    const counts: Record<GroupKey, number> = {
+      active: 0,
+      awaiting_qms: 0,
+      stage1_ready: 0,
+      stage2_ready: 0,
+      certified: 0,
+      surveillance: 0,
+      recert_due: 0,
+    };
+    for (const r of searched) {
+      const g = groupOf(r.status);
+      if (g) counts[g] += 1;
     }
+    return counts;
+  }, [searched]);
+
+  const filtered = useMemo(() => {
+    let arr = searched;
     if (groups.size > 0) {
       arr = arr.filter((r) => {
         const g = groupOf(r.status);
@@ -193,7 +234,7 @@ export function EngagementsList({ rows }: { rows: EngagementRow[] }) {
       });
     }
     return sortEngagements(arr, sort);
-  }, [rows, q, sort, groups]);
+  }, [searched, sort, groups]);
 
   const toggleGroup = (g: GroupKey) => {
     setGroups((cur) => {
@@ -214,7 +255,7 @@ export function EngagementsList({ rows }: { rows: EngagementRow[] }) {
 
   return (
     <div>
-      <div className="card p-4 mb-5 space-y-3">
+      <div className="card p-4 sm:p-5 mb-5">
         <div className="flex flex-wrap items-center gap-3">
           <div className="relative flex-1 min-w-[220px]">
             <Search
@@ -242,22 +283,57 @@ export function EngagementsList({ rows }: { rows: EngagementRow[] }) {
             </button>
           )}
         </div>
-        <div className="flex flex-wrap items-center gap-1.5">
-          {GROUP_ORDER.map((g) => {
+
+        <div className="mt-4 pt-3.5 border-t border-line/70 flex flex-wrap items-baseline gap-x-4 gap-y-2">
+          <span className="eyebrow text-[10px] tracking-[0.16em]">Status</span>
+          {GROUP_ORDER.map((g, i) => {
             const active = groups.has(g);
+            const count = groupCounts[g];
+            const dim = count === 0 && !active;
             return (
-              <button
+              <span
                 key={g}
-                type="button"
-                onClick={() => toggleGroup(g)}
-                className={`text-[12px] px-2.5 py-1 rounded-full border transition ${
-                  active
-                    ? "border-navy-bright bg-navy-bright/10 text-ink"
-                    : "border-line bg-paper-card text-ink-mute hover:text-ink hover:border-line-strong"
-                }`}
+                className="inline-flex items-baseline gap-x-1.5"
               >
-                {GROUP_LABEL[g]}
-              </button>
+                <button
+                  type="button"
+                  onClick={() => toggleGroup(g)}
+                  aria-pressed={active}
+                  className={`group inline-flex items-baseline gap-1.5 border-b-2 pb-0.5 transition-colors ${
+                    active
+                      ? "border-navy-bright text-ink font-medium"
+                      : "border-transparent hover:border-line-strong " +
+                        (dim ? "text-ink-faint" : "text-ink-mute hover:text-ink")
+                  }`}
+                >
+                  <span
+                    className={`h-1.5 w-1.5 rounded-full self-center ${
+                      GROUP_DOT[g]
+                    } ${dim ? "opacity-40" : ""}`}
+                    aria-hidden
+                  />
+                  <span className="text-[13px]">{GROUP_LABEL[g]}</span>
+                  <span
+                    className={`text-[11px] font-mono tabular-nums ${
+                      active
+                        ? "text-navy-bright"
+                        : dim
+                        ? "text-ink-faint"
+                        : "text-ink-faint"
+                    }`}
+                  >
+                    {count}
+                  </span>
+                </button>
+                {i < GROUP_ORDER.length - 1 && (
+                  <span
+                    className="text-ink-faint/50 select-none"
+                    aria-hidden
+                  >
+                    ·
+                  </span>
+                )}
+              </span>
             );
           })}
         </div>
@@ -298,9 +374,9 @@ export function EngagementsList({ rows }: { rows: EngagementRow[] }) {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2.5">
                         <span
-                          className={`h-2 w-2 rounded-full ${STATUS_DOT[status]} ${
-                            isActive ? "status-pulse" : ""
-                          }`}
+                          className={`h-2 w-2 rounded-full ${
+                            STATUS_DOT[status]
+                          } ${isActive ? "status-pulse" : ""}`}
                           aria-hidden
                         />
                         <span

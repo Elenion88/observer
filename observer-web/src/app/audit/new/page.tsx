@@ -130,7 +130,7 @@ export default function NewAuditPage() {
 
       <button
         type="button"
-        onClick={runDemo}
+        onClick={loadDemo}
         disabled={demoLoading || pending}
         className="mt-4 w-full rounded-[var(--radius)] border border-line bg-paper-card px-4 py-3 text-left transition-colors hover:bg-paper-soft hover:border-line-strong disabled:opacity-60 disabled:cursor-not-allowed"
       >
@@ -147,8 +147,9 @@ export default function NewAuditPage() {
               Try a demo · NWCR Quality Manual
             </p>
             <p className="text-[12px] text-ink-mute">
-              90-page sample QMS — watch Observer extract the org details and
-              draft the Stage-1 packet in seconds.
+              Loads a 90-page sample QMS into the dropzone — then hit
+              Upload&nbsp;+&nbsp;extract to watch Observer draft the Stage-1
+              packet.
             </p>
           </div>
         </div>

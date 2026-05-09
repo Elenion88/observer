@@ -18,8 +18,6 @@ import { StatusTimeline } from "./StatusTimeline";
 import { ApprovalChip, SectionApprovalFooter } from "./SectionApproval";
 import { CaptureButton } from "./CaptureButton";
 import { UploadEvidenceButton } from "./UploadEvidenceButton";
-import { BlankCountChip } from "./BlankCountChip";
-
 export const dynamic = "force-dynamic";
 
 export default async function EngagementPage({
